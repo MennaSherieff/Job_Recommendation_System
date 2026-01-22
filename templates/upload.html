@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Job Recommendation System</h1>
+    <p>Upload your CV</p>
+
+    <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+        <input type="file" 
+        name="cv_file" 
+        accept=".doc,.docx,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" 
+        required>
+        <button type="submit">Upload CV</button>
+    </form>
+</div>
+{% endblock %}

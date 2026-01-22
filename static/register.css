@@ -1,0 +1,168 @@
+/* ===== BASE PAGE STYLES (REGISTER ONLY) ===== */
+
+/* Make page fill screen so footer can stick to bottom */
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+
+    min-width: 1200px;
+}
+
+/* FIXED WIDTH LAYOUT */
+.container {
+    width: 1100px;
+    margin: 0 auto;
+}
+
+/* NAVBAR */
+.navbar {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 20px;
+    color: #005fa3;
+}
+
+.nav-links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #444;
+}
+
+.nav-actions button {
+    margin-left: 10px;
+}
+
+/* BUTTONS */
+.btn-primary {
+    background: #005fa3;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-outline {
+    border: 1px solid #005fa3;
+    background: none;
+    color: #005fa3;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* FOOTER — FIXED TO BOTTOM */
+.footer {
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+
+/* REGISTER PAGE WRAPPER */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+/* REGISTER BOX */
+.auth-container {
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    width: 450px;
+}
+
+.auth-box {
+    text-align: left;
+}
+
+.auth-box h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #005fa3;
+}
+
+.auth-subtitle {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #666;
+}
+
+/* FORM FIELDS */
+.auth-field {
+    margin-bottom: 15px;
+}
+
+.auth-field label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.auth-field input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* REGISTER BUTTON */
+.auth-btn {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* SMALL LINK */
+.auth-link-text {
+    font-size: 13px;
+    margin-top: 10px;
+}
+.error-box {
+    background: #ffdddd;
+    color: #b80000;
+    padding: 10px;
+    border-left: 4px solid #b80000;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.auth-link-text a {
+    color: #005fa3;
+    text-decoration: none;
+}
+.flash {
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    width: 40%;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.flash-success { background: #d4edda; color: #155724; }
+.flash-info    { background: #cce5ff; color: #004085; }
+.flash-error   { background: #f8d7da; color: #721c24; }

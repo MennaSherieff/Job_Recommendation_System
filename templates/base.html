@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Campus</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename=css_file) }}">
+</head>
+<body>
+     <div class="navbar">
+        <div class="logo">Job Campus</div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('upload') }}">Upload</a>
+    
+        </div>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('login') }}">
+                <button>Login</button>
+            </a>
+
+            <!--  Added: Sign Up -->
+            <a href="{{ url_for('register') }}">
+                <button>Sign Up</button>
+            </a>
+
+            <!-- Added: Logout -->
+            <a href="{{ url_for('logout') }}">
+                <button>Logout</button>
+            </a>
+            {%if current_user.is_authenticated %}
+            <a href="{{ url_for('profile') }}">
+                <button>{{ current_user.fname }}</button>
+            </a>
+
+            {% endif %}
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, msg in messages %}
+                    <div class="flash flash-{{ category }}">{{ msg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %} 
+   <script>
+        // auto hide flash messages after 1.5 seconds
+        setTimeout(function() {
+            let flashes = document.querySelectorAll('.flash');
+            flashes.forEach(flash => {
+                flash.style.transition = "opacity 0.5s ease";
+                flash.style.opacity = "0";
+                setTimeout(() => flash.remove(), 500);
+            });
+        }, 1500); 
+    </script>   
+
+    {% block content %}
+    // code  
+    {% endblock %}
+
+    <!-- <div>
+        <!-- FOOTER -->
+        <!-- <footer class="footer">
+            © 2025 Job Campus — All Rights Reserved
+        </footer> -->
+    <!-- </div> --> 
+
+</body>
+</html>
