@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Job Recommendations</h1>
+
+    {% if recommendations %}
+    <p class="lead">We found {{ recommendations|length }} job matches based on your CV!</p>
+
+    <div class="row">
+        {% for rec in recommendations %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ rec.job_title }}</h5>
+
+                    <div class="mb-2">
+                        {% if rec.company %}
+                        <span class="badge bg-primary">{{ rec.company }}</span>
+                        {% endif %}
+                        {% if rec.location %}
+                        <span class="badge bg-secondary">{{ rec.location }}</span>
+                        {% endif %}
+                        <span class="badge bg-info">{{ rec.domain }}</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Match Score:</span>
+                            <span class="badge bg-success fs-6">{{ "%.1f"|format(rec.score) }}%</span>
+                        </div>
+                        <div class="progress mt-2" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ rec.score }}%;"
+                                aria-valuenow="{{ rec.score }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between text-muted small mb-3">
+                        <span>✓ {{ rec.matched_skills_count }} skills matched</span>
+                        <span>✗ {{ rec.missing_skills_count }} skills missing</span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('job_details', job_id=rec.job_id) }}" class="btn btn-primary">
+                            View Details
+                        </a>
+                        <!-- {% if rec.job_url %}
+                            <a href="{{ rec.job_url }}" class="btn btn-outline-success" target="_blank"
+                            rel="noopener noreferrer">
+                                Apply Now
+                            </a>
+                        {% endif %} -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">No recommendations yet</h4>
+        <p>Upload your CV to get personalized job recommendations!</p>
+        <hr>
+        <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload CV</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

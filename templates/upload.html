@@ -1,16 +1,205 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h1>Job Recommendation System</h1>
-    <p>Upload your CV</p>
+<div class="upload-container">
+    <div class="poc-link-card">
+        <p><strong>Want to test the matching logic manually?</strong> Try our <a
+                href="{{ url_for('manual_poc') }}">Manual Keyword POC</a>.</p>
+    </div>
 
-    <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data">
-        <input type="file" 
-        name="cv_file" 
-        accept=".doc,.docx,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" 
-        required>
-        <button type="submit">Upload CV</button>
-    </form>
+    {% set active_cv = current_user.cvs|selectattr('status', 'equalto', 'completed')|first if current_user.cvs else None
+    %}
+
+    <div class="card {% if active_cv %}completed-step{% else %}active-step{% endif %}">
+        <h1>Step 1: Upload your CV</h1>
+        <p>We'll extract your skills and match them with job requirements.</p>
+
+        {% if active_cv %}
+        <div class="cv-status-container">
+            <div class="cv-info">
+                <div class="status-badge success">✓ CV Uploaded</div>
+                <span class="cv-id-label">Current CV ID: <strong>cv_{{ active_cv.id }}</strong></span>
+            </div>
+            <div class="cv-actions">
+                <form action="{{ url_for('delete_cv', cv_id=active_cv.id) }}" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete your CV and all associated matches?');">
+                    <button type="submit" class="btn-danger-link">Delete & Re-upload</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <input type="file" name="cv_file" id="cv_file"
+                    accept=".doc,.docx,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf"
+                    required>
+            </div>
+            <button type="submit" class="btn-primary">Upload CV</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="card video-upload-card {% if active_cv %}active-step{% else %}disabled-step{% endif %}">
+        <h1>Step 2: Upload a Video</h1>
+        <p><strong>Required for matching:</strong> Enhance your profile with behavioral insights from a short video
+            introduction.</p>
+
+        {% if active_cv %}
+        <form method="post" action="{{ url_for('upload_video') }}" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <input type="file" name="video_file" id="video_file" accept="video/*" required>
+            </div>
+            <button type="submit" class="btn-secondary">Upload Video & Get Matches</button>
+        </form>
+        {% else %}
+        <div class="locked-message">
+            <p>Please complete Step 1 (CV Upload) first.</p>
+        </div>
+        {% endif %}
+
+    </div>
 </div>
+
+<style>
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .poc-link-card {
+        background-color: #e9ecef;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eee;
+    }
+
+    .active-step {
+        border: 2px solid #007bff;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+    }
+
+    .completed-step {
+        opacity: 0.9;
+        background-color: #f8f9fa;
+    }
+
+    .disabled-step {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .cv-status-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #d4edda;
+    }
+
+    .cv-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .cv-id-label {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.3rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        width: fit-content;
+    }
+
+    .status-badge.success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .btn-danger-link {
+        background: none;
+        border: none;
+        color: #dc3545;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .btn-danger-link:hover {
+        color: #a71d2a;
+    }
+
+    .file-input-wrapper {
+        margin-bottom: 1.5rem;
+    }
+
+    .locked-message {
+        padding: 1rem;
+        background-color: #fff3cd;
+        color: #856404;
+        border-radius: 5px;
+        text-align: center;
+        margin: 1rem 0;
+        border: 1px solid #ffeeba;
+    }
+
+    .video-upload-card {
+        border-top: 1px solid #eee;
+        padding-top: 2rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #28a745;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+        width: 100%;
+    }
+
+    .btn-secondary:hover {
+        background-color: #218838;
+    }
+</style>
 {% endblock %}

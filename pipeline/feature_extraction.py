@@ -6,7 +6,7 @@ from nltk.stem import WordNetLemmatizer
 
 
 # ============================================================================
-# SKILL DICTIONARIES
+# SKILL DICTIONARIES ]
 # ============================================================================
 
 HARD_SKILLS_DICT = {
@@ -76,9 +76,8 @@ MASTER_HARD_SKILLS = list(HARD_SKILLS_DICT.keys())
 MASTER_SOFT_SKILLS = list(SOFT_SKILLS_DICT.keys())
 
 
-# ============================================================================
 # TEXT PREPROCESSING
-# ============================================================================
+
 
 def clean_text(text: Union[str, float, None]) -> str:
     """
@@ -94,16 +93,6 @@ def clean_text(text: Union[str, float, None]) -> str:
     7. Tokenize
     8. Remove stopwords
     9. Lemmatize tokens
-    
-    Args:
-        text: Input text to clean. Can be str, float (NaN), or None.
-        
-    Returns:
-        Cleaned text as a single string with tokens separated by spaces.
-        
-    Examples:
-        >>> clean_text("The developer has 5+ years of Python experience.")
-        "developer year python experience"
     """
     # Handle missing or non-string values
     if not isinstance(text, str):
@@ -122,7 +111,7 @@ def clean_text(text: Union[str, float, None]) -> str:
     # Remove mentions
     text = re.sub(r'@\S*', '', text)
     
-    # Remove boilerplate/irrelevant phrases (case-insensitive via lowercase above)
+    # Remove boilerplate/irrelevant phrases
     boilerplate_pattern = (
         r'\b(view on map|additional information|job number|marriott|'
         r'jw marriott|le ridien|equal opportunity|employee happy|join portfolio)\b'
@@ -132,7 +121,7 @@ def clean_text(text: Union[str, float, None]) -> str:
     # Tokenize by whitespace
     tokens = text.split()
     
-    # Load stopwords and lemmatizer (stateless within function)
+    # Load stopwords and lemmatizer
     stop_words = set(stopwords.words('english'))
     lemmatizer = WordNetLemmatizer()
     
@@ -156,21 +145,6 @@ def extract_skills_from_text(
 ) -> List[str]:
     """
     Extract skills from text using exact lexicon matching.
-    
-    For each canonical skill, checks if any of its variants appear in the text.
-    Each skill is extracted at most once (presence-based, not frequency-based).
-    
-    Args:
-        text: Cleaned text to search for skills (should be preprocessed/lowercased)
-        skill_dict: Dictionary mapping canonical skill names to variant lists
-        
-    Returns:
-        List of canonical skill names found in the text
-        
-    Examples:
-        >>> text = "python machine learning team collaboration"
-        >>> extract_skills_from_text(text, HARD_SKILLS_DICT)
-        ['python', 'machine learning']
     """
     found_skills = []
     
@@ -189,17 +163,6 @@ def vectorize_skills(
 ) -> List[int]:
     """
     Convert a list of skills into a binary vector aligned with master skill list.
-    
-    Args:
-        skill_list: List of skills present (canonical names)
-        master_skills: Ordered list of all possible skills (defines vector dimension)
-        
-    Returns:
-        Binary vector where 1 indicates skill presence, 0 indicates absence
-        
-    Examples:
-        >>> vectorize_skills(['python', 'ai'], MASTER_HARD_SKILLS)
-        [1, 0, 0, ..., 1, ...]  # length = len(MASTER_HARD_SKILLS)
     """
     return [1 if skill in skill_list else 0 for skill in master_skills]
 
@@ -216,31 +179,6 @@ def compute_match_features(
 ) -> Tuple[int, int, float, int, List[str], List[str]]:
     """
     Compute matching features between a CV and a job description.
-    
-    Calculates skill alignment metrics based on binary skill vectors.
-    
-    Args:
-        cv_hard_vec: Binary vector of hard skills in CV
-        jd_hard_vec: Binary vector of hard skills required by job
-        cv_soft_vec: Binary vector of soft skills in CV
-        jd_soft_vec: Binary vector of soft skills required by job
-        
-    Returns:
-        Tuple containing:
-        - matched_weight: Number of required hard skills present in CV
-        - required_weight: Total number of hard skills required by job
-        - match_ratio: Proportion of required hard skills matched (0-1)
-        - missing_required_skills_count: Number of required hard skills missing
-        - missing_hard_skills: List of missing required hard skill names
-        - missing_soft_skills: List of missing required soft skill names
-        
-    Examples:
-        >>> cv_hard = [1, 0, 1, 0]
-        >>> jd_hard = [1, 1, 0, 0]
-        >>> cv_soft = [1, 1]
-        >>> jd_soft = [1, 0]
-        >>> compute_match_features(cv_hard, jd_hard, cv_soft, jd_soft)
-        (1, 2, 0.5, 1, ['software development'], [])
     """
     # Count matched required hard skills
     matched_weight = sum(
@@ -291,19 +229,6 @@ def compute_match_features(
 def extract_cv_features(cv_text: str) -> Dict[str, Union[str, List[str], List[int]]]:
     """
     Extract all features from a CV text.
-    
-    Performs cleaning, skill extraction, and vectorization in one pass.
-    
-    Args:
-        cv_text: Raw CV text
-        
-    Returns:
-        Dictionary containing:
-        - clean_text: Preprocessed text
-        - hard_skills: List of extracted hard skill names
-        - soft_skills: List of extracted soft skill names
-        - hard_vector: Binary vector of hard skills
-        - soft_vector: Binary vector of soft skills
     """
     clean = clean_text(cv_text)
     
@@ -325,20 +250,6 @@ def extract_cv_features(cv_text: str) -> Dict[str, Union[str, List[str], List[in
 def extract_jd_features(jd_text: str) -> Dict[str, Union[str, List[str], List[int], int]]:
     """
     Extract all features from a job description text.
-    
-    Performs cleaning, skill extraction, and vectorization in one pass.
-    
-    Args:
-        jd_text: Raw job description text
-        
-    Returns:
-        Dictionary containing:
-        - clean_text: Preprocessed text
-        - required_hard_skills: List of required hard skill names
-        - required_soft_skills: List of required soft skill names
-        - hard_vector: Binary vector of required hard skills
-        - soft_vector: Binary vector of required soft skills
-        - skill_count: Total number of required skills
     """
     clean = clean_text(jd_text)
     
@@ -364,22 +275,6 @@ def compute_cv_jd_match(
 ) -> Dict[str, Union[int, float, List[str]]]:
     """
     Compute matching features between a CV and a job description.
-    
-    Args:
-        cv_features: Output from extract_cv_features()
-        jd_features: Output from extract_jd_features()
-        
-    Returns:
-        Dictionary containing:
-        - matched_weight: Number of required hard skills matched
-        - required_weight: Total required hard skills
-        - match_ratio: Proportion of required skills matched
-        - missing_required_skills_count: Count of missing required hard skills
-        - missing_hard_skills: List of missing hard skill names
-        - missing_soft_skills: List of missing soft skill names
-        - required_hard_skills: List of required hard skills
-        - required_soft_skills: List of required soft skills
-        - required_skill_count: Total required skills
     """
     mw, rw, mr, miss_count, miss_hard, miss_soft = compute_match_features(
         cv_features["hard_vector"],
@@ -413,22 +308,6 @@ def process_job_descriptions_dataframe(
 ) -> pd.DataFrame:
     """
     Process a dataframe of job descriptions to extract skills and features.
-    
-    Args:
-        df: DataFrame with job description columns
-        summary_col: Column name for job summary
-        responsibilities_col: Column name for responsibilities
-        qualifications_col: Column name for qualifications
-        
-    Returns:
-        DataFrame with additional columns:
-        - summary_cleaned
-        - responsibilities_cleaned
-        - qualifications_cleaned
-        - job_description_clean (concatenated)
-        - required_hard_skills
-        - required_soft_skills
-        - skill_count
     """
     df = df.copy()
     
@@ -473,9 +352,6 @@ def process_job_descriptions_dataframe(
 def get_master_skills() -> Tuple[List[str], List[str]]:
     """
     Get the master skill lists used for vectorization.
-    
-    Returns:
-        Tuple of (MASTER_HARD_SKILLS, MASTER_SOFT_SKILLS)
     """
     return MASTER_HARD_SKILLS.copy(), MASTER_SOFT_SKILLS.copy()
 
@@ -483,8 +359,5 @@ def get_master_skills() -> Tuple[List[str], List[str]]:
 def get_skill_dictionaries() -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """
     Get the skill dictionaries used for extraction.
-    
-    Returns:
-        Tuple of (HARD_SKILLS_DICT, SOFT_SKILLS_DICT)
     """
     return HARD_SKILLS_DICT.copy(), SOFT_SKILLS_DICT.copy()

@@ -11,7 +11,7 @@ def create_app():
 
     load_dotenv()
     app = Flask(__name__, template_folder='templates', static_folder='static')
-    password = ""
+    password = "Password%401234%23"
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://root:{password}@localhost:3306/recommendation_system_db"
   
     app.secret_key = os.getenv("SECRET_KEY")

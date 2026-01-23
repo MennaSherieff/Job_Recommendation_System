@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Job Information -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ job.title }}</h2>
+
+                    <div class="mb-3">
+                        {% if job.company %}
+                        <span class="badge bg-primary me-2">{{ job.company }}</span>
+                        {% endif %}
+                        {% if job.location %}
+                        <span class="badge bg-secondary me-2">{{ job.location }}</span>
+                        {% endif %}
+                
+
+
+                        <span class="badge bg-info">{{ job.domain }}</span>
+
+                        {% if job.job_url %}
+                        <a href="{{ job.job_url }}"
+                        class="btn btn-success mt-3"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Apply Now
+                        </a>
+                        {% endif %}
+
+                     
+                 
+                    </div>
+
+                    <h5 class="mt-4">Job Description</h5>
+                    <p class="text-muted">{{ job.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            {% if recommendation %}
+            <!-- Match Score Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Your Match Score</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="display-4 text-success">{{ "%.1f"|format(recommendation.score) }}%</h1>
+                    <p class="text-muted">
+                        {{ recommendation.matched_weight }} out of {{ recommendation.required_weight }} required skills
+                        matched
+                    </p>
+                </div>
+            </div>
+
+            <!-- Matched Skills -->
+            {% if recommendation.matched_hard_skills or recommendation.matched_soft_skills %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">✓ Skills You Have</h6>
+                </div>
+                <div class="card-body">
+                    {% if recommendation.matched_hard_skills %}
+                    <h6 class="text-success">Hard Skills</h6>
+                    <div class="mb-3">
+                        {% for skill in recommendation.matched_hard_skills %}
+                        <span class="badge bg-success me-1 mb-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if recommendation.matched_soft_skills %}
+                    <h6 class="text-success">Soft Skills</h6>
+                    <div>
+                        {% for skill in recommendation.matched_soft_skills %}
+                        <span class="badge bg-success me-1 mb-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Missing Skills -->
+            {% if recommendation.missing_hard_skills or recommendation.missing_soft_skills %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">✗ Skills to Develop</h6>
+                </div>
+                <div class="card-body">
+                    {% if recommendation.missing_hard_skills %}
+                    <h6 class="text-warning">Hard Skills</h6>
+                    <div class="mb-3">
+                        {% for skill in recommendation.missing_hard_skills %}
+                        <span class="badge bg-warning text-dark me-1 mb-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if recommendation.missing_soft_skills %}
+                    <h6 class="text-warning">Soft Skills</h6>
+                    <div>
+                        {% for skill in recommendation.missing_soft_skills %}
+                        <span class="badge bg-warning text-dark me-1 mb-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- No Match Data -->
+            <div class="alert alert-info">
+                <h6 class="alert-heading">No Match Data</h6>
+                <p class="mb-0">Upload your CV to see how well you match this job!</p>
+            </div>
+            {% endif %}
+
+            <!-- Required Skills -->
+            {% if job.required_hard_skills or job.required_soft_skills %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">Required Skills</h6>
+                </div>
+                <div class="card-body">
+                    {% if job.required_hard_skills %}
+                    <h6 class="text-primary">Hard Skills</h6>
+                    <div class="mb-3">
+                        {% for skill in job.required_hard_skills %}
+                        <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if job.required_soft_skills %}
+                    <h6 class="text-primary">Soft Skills</h6>
+                    <div>
+                        {% for skill in job.required_soft_skills %}
+                        <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('recommendations') }}" class="btn btn-secondary">← Back to Recommendations</a>
+    </div>
+</div>
+{% endblock %}
