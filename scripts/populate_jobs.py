@@ -61,4 +61,4 @@ def populate_jobs(csv_path, limit=100):
 if __name__ == "__main__":
     csv_file = os.path.join('Data', 'intermediate', '01_linkedin_jobs_egypt.csv')
    
-    populate_jobs(csv_file, limit=200)
+    populate_jobs(csv_file, limit=100)

@@ -86,18 +86,19 @@ def register_routes(app,db,bcrypt):
             # Save video
             video_id, file_path = VideoService.save_video(current_user.id, video_file)
             
-            # Process video (extract mock features)
-            VideoService.process_video(current_user.id, video_id, file_path)
+            # Process video (extract real features)
+            video_feature = VideoService.process_video(current_user.id, video_id, file_path)
             
             # Check if user has a completed CV
             cv = CV.query.filter_by(user_id=current_user.id, status='completed').order_by(CV.uploaded_at.desc()).first()
             
             if cv:
-                # Generate job recommendations since both CV and Video are present
+                # Generate job recommendations using the FRESH video feature ID to avoid stale caching
                 recommendations = RecommendationService.generate_recommendations(
                     user_id=current_user.id,
                     cv_id=cv.id,
-                    top_n=10
+                    top_n=10,
+                    video_feature_id=video_feature.id
                 )
                 flash(f"Video processed! Found {len(recommendations)} job matches based on your profile.", "success")
                 return redirect(url_for('recommendations'))

@@ -2,7 +2,7 @@ import os
 from typing import Dict, List, Optional
 from pathlib import Path as FilePath
 from datetime import datetime
-from models import CV, CVFeature, db
+from models import CV, CVFeature, VideoFeature, db
 from pipeline.feature_extraction import extract_cv_features
 
 
@@ -158,13 +158,20 @@ class CVService:
         CVFeature.query.filter_by(cv_id=cv_id).delete()
         
         # Delete associated recommendations and their skills
-        from models import Recommendation, MatchedSkill, MissingSkill
+        from models import Recommendation, MatchedSkill, MissingSkill,Video
         recommendations = Recommendation.query.filter_by(cv_id=cv_id).all()
         for rec in recommendations:
             MatchedSkill.query.filter_by(recommendation_id=rec.id).delete()
             MissingSkill.query.filter_by(recommendation_id=rec.id).delete()
             db.session.delete(rec)
             
+    # Delete videos + video features (for this user)
+        # videos = Video.query.filter_by(user_id=user_id).all()
+        # for video in videos:
+        # # delete video features first
+        #     VideoFeature.query.filter_by(video_id=video.id).delete()
+        #     db.session.delete(video)
+
         # Delete the CV file if it exists
         try:
             if cv.cv_file_path and os.path.exists(cv.cv_file_path):

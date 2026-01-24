@@ -10,7 +10,7 @@ from pipeline.feature_extraction import extract_jd_features
 class JobService:
     @staticmethod
     def create_job(title: str, description: str, domain: str, 
-                   company: Optional[str] = None, location: Optional[str] = None) -> int:
+                   company: Optional[str] = None, location: Optional[str] = None, job_url: Optional[str] = None) -> int:
         """
         Create a new job listing and extract its features.
         """
@@ -21,6 +21,7 @@ class JobService:
             domain=domain,
             company=company,
             location=location,
+            job_url=job_url,
             is_active=True
         )
         db.session.add(job)

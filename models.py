@@ -170,7 +170,7 @@ class VideoFeature(db.Model):
     # Derived soft skill match score
     soft_skill_match_score = db.Column(db.Float, nullable=False)
 
-    # Optional: Human-readable soft skills for display
+    # # Optional: Human-readable soft skills for display
     predicted_soft_skills = db.Column(db.JSON, nullable=True)
     # Example: {'communication': 0.85, 'confidence': 0.72, 'professionalism': 0.90}
 
