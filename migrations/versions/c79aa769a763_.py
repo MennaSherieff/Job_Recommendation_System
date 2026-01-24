@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9324bef8d5b2
+Revision ID: c79aa769a763
 Revises: 
-Create Date: 2026-01-22 16:36:45.127605
+Create Date: 2026-01-24 13:43:25.542350
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9324bef8d5b2'
+revision = 'c79aa769a763'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,6 +23,11 @@ def upgrade():
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
     sa.Column('domain', sa.String(length=255), nullable=False),
+    sa.Column('company', sa.String(length=255), nullable=True),
+    sa.Column('location', sa.String(length=255), nullable=True),
+    sa.Column('job_url', sa.String(length=500), nullable=True),
+    sa.Column('posted_at', sa.DateTime(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -36,16 +41,46 @@ def upgrade():
     op.create_table('cv',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('cv_file_path', sa.String(length=255), nullable=False),
+    sa.Column('raw_text_path', sa.String(length=255), nullable=True),
+    sa.Column('uploaded_at', sa.DateTime(), nullable=True),
+    sa.Column('status', sa.String(length=50), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('job_feature',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('job_id', sa.Integer(), nullable=False),
+    sa.Column('required_hard_skills', sa.JSON(), nullable=False),
+    sa.Column('required_soft_skills', sa.JSON(), nullable=False),
+    sa.Column('hard_skills_vector', sa.JSON(), nullable=False),
+    sa.Column('soft_skills_vector', sa.JSON(), nullable=False),
+    sa.Column('skill_count', sa.Integer(), nullable=False),
+    sa.Column('extracted_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['job_id'], ['job.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('job_id')
+    )
     op.create_table('video',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('video_file_path', sa.String(length=255), nullable=False),
+    sa.Column('uploaded_at', sa.DateTime(), nullable=True),
+    sa.Column('status', sa.String(length=50), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('cv_feature',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('cv_id', sa.Integer(), nullable=False),
+    sa.Column('hard_skills', sa.JSON(), nullable=False),
+    sa.Column('soft_skills', sa.JSON(), nullable=False),
+    sa.Column('hard_skills_vector', sa.JSON(), nullable=False),
+    sa.Column('soft_skills_vector', sa.JSON(), nullable=False),
+    sa.Column('extracted_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['cv_id'], ['cv.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cv_id')
     )
     op.create_table('recommendation',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -54,16 +89,32 @@ def upgrade():
     sa.Column('cv_id', sa.Integer(), nullable=True),
     sa.Column('video_id', sa.Integer(), nullable=True),
     sa.Column('score', sa.Float(), nullable=False),
+    sa.Column('match_ratio', sa.Float(), nullable=True),
+    sa.Column('matched_weight', sa.Integer(), nullable=True),
+    sa.Column('required_weight', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['cv_id'], ['cv.id'], ),
     sa.ForeignKeyConstraint(['job_id'], ['job.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.ForeignKeyConstraint(['video_id'], ['video.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('video_feature',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('video_id', sa.Integer(), nullable=False),
+    sa.Column('cnn_features', sa.JSON(), nullable=False),
+    sa.Column('soft_skill_match_score', sa.Float(), nullable=False),
+    sa.Column('predicted_soft_skills', sa.JSON(), nullable=True),
+    sa.Column('extracted_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['video_id'], ['video.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('video_id')
+    )
     op.create_table('matched_skill',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('recommendation_id', sa.Integer(), nullable=False),
     sa.Column('skill_name', sa.String(length=255), nullable=False),
+    sa.Column('skill_type', sa.String(length=50), nullable=True),
     sa.ForeignKeyConstraint(['recommendation_id'], ['recommendation.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -71,6 +122,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('recommendation_id', sa.Integer(), nullable=False),
     sa.Column('skill_name', sa.String(length=255), nullable=False),
+    sa.Column('skill_type', sa.String(length=50), nullable=True),
     sa.ForeignKeyConstraint(['recommendation_id'], ['recommendation.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -81,8 +133,11 @@ def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('missing_skill')
     op.drop_table('matched_skill')
+    op.drop_table('video_feature')
     op.drop_table('recommendation')
+    op.drop_table('cv_feature')
     op.drop_table('video')
+    op.drop_table('job_feature')
     op.drop_table('cv')
     op.drop_table('user')
     op.drop_table('job')

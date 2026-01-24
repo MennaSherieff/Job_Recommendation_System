@@ -184,10 +184,12 @@ def compute_match_features(
     matched_weight = sum(
         1 for i in range(len(cv_hard_vec)) 
         if cv_hard_vec[i] and jd_hard_vec[i]
+    ) + sum(
+        1 for i in range(len(cv_soft_vec)) 
+        if cv_soft_vec[i] and jd_soft_vec[i]
     )
-    
     # Count total required hard skills
-    required_weight = sum(jd_hard_vec)
+    required_weight = sum(jd_hard_vec) + sum(jd_soft_vec)
     
     # Calculate match ratio (handle division by zero)
     match_ratio = matched_weight / required_weight if required_weight > 0 else 0.0
@@ -196,7 +198,15 @@ def compute_match_features(
     missing_required_skills_count = sum(
         1 for i in range(len(jd_hard_vec)) 
         if jd_hard_vec[i] and not cv_hard_vec[i]
+    ) + sum(
+        1 for i in range(len(jd_soft_vec)) 
+        if jd_soft_vec[i] and not cv_soft_vec[i]
     )
+
+    # missing_required_skills_count = sum(
+    #     1 for i in range(len(jd_soft_vec)) 
+    #     if jd_soft_vec[i] and not cv_soft_vec[i]
+    # )
     
     # Identify missing hard skills by name
     missing_hard_skills = [

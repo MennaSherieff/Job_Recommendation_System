@@ -34,10 +34,13 @@ class RecommendationService:
                 cls._model = joblib.load(model_path)
 
     @staticmethod
-    def generate_recommendations(user_id: int, cv_id: int, top_n: int = 10) -> List[Dict]:
+    def generate_recommendations(user_id: int, cv_id: int, top_n: int = 10, video_feature_id: Optional[int] = None) -> List[Dict]:
         """
         Generate job recommendations for a user based on their CV using the specific Logistic Regression model.
         """
+        # CRITICAL: Force SQLAlchemy to forget cached objects from previous requests/processing
+        db.session.expire_all()
+        
         # Get CV and its features
         cv = CV.query.get(cv_id)
         if not cv or cv.user_id != user_id:
@@ -47,9 +50,22 @@ class RecommendationService:
         if not cv_features:
             raise ValueError(f"Features not extracted for CV {cv_id}. Please process the CV first.")
         
-        # Get video features if available
+        # Get video features
         from models import Video
-        video_features = VideoFeature.query.join(Video).filter(Video.user_id == user_id).order_by(VideoFeature.extracted_at.desc()).first()
+        if video_feature_id:
+            # Use specific ID passed from the upload process
+            video_features = VideoFeature.query.get(video_feature_id)
+            print(f"[INFO] Using specific video feature ID: {video_feature_id}")
+        else:
+            # Fallback to latest
+            video_features = (VideoFeature.query.join(Video)
+                             .filter(Video.user_id == user_id, Video.status == 'completed')
+                             .order_by(Video.uploaded_at.desc()).first())
+            print("[INFO] No specific video feature ID provided, using latest completed.")
+
+        if video_features:
+            # Ensure the object is fresh from the DB
+            db.session.refresh(video_features)
         
         # Get all active jobs with features
         jobs = Job.query.filter_by(is_active=True).all()
@@ -81,7 +97,8 @@ class RecommendationService:
                 X = X[RecommendationService._model_features]
                 
                 # Model Score (Probability of class 1)
-                score = RecommendationService._model.predict_proba(X)[0, 1] * 100
+                # score = 0.6 * model + 0.4 * ratio
+                score = 0.6 * (RecommendationService._model.predict_proba(X)[0, 1] * 100) + 0.4 * (match_result['match_ratio'] * 100)
             else:
                 # Fallback to match ratio
                 score = match_result['match_ratio'] * 100
@@ -91,7 +108,8 @@ class RecommendationService:
                 user_id=user_id,
                 job_id=job.id,
                 cv_id=cv_id,
-                video_id=video_features.id if video_features else None,
+                # Fix: link to the Video.id, not the VideoFeature.id
+                video_id=video_features.video_id if video_features else None,
                 score=score,
                 match_ratio=match_result['match_ratio'],
                 matched_weight=match_result['matched_weight'],
