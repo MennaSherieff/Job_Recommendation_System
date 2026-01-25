@@ -1,157 +1,412 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Job Information -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">{{ job.title }}</h2>
+<style>
+    /* Job Details Page Styles - Clean & Relaxed */
+    .job-details-page {
+        min-height: 100vh;
+        padding: 30px 20px 60px 20px;
+        background: white;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    /* Job Card */
+    .job-card {
+        background: white;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 2px 12px rgba(11, 19, 43, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+    
+    .job-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0A66C2 0%, #6D5BD0 50%, #5BC0BE 100%);
+    }
+    
+    .job-card .card-body {
+        padding: 28px;
+    }
+    
+    /* Job Title */
+    .job-title {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 32px;
+        color: #0B132B;
+        margin: 0 0 24px 0;
+        line-height: 1.3;
+    }
+    
+    /* Badges */
+    .badge {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .badge.bg-primary {
+        background: rgba(10, 102, 194, 0.1) !important;
+        color: #0A66C2;
+        border: 1px solid rgba(10, 102, 194, 0.2);
+    }
+    
+    .badge.bg-secondary {
+        background: rgba(91, 192, 190, 0.1) !important;
+        color: #5BC0BE;
+        border: 1px solid rgba(91, 192, 190, 0.2);
+    }
+    
+    .badge.bg-info {
+        background: rgba(109, 91, 208, 0.1) !important;
+        color: #6D5BD0;
+        border: 1px solid rgba(109, 91, 208, 0.2);
+    }
+    
+    /* Apply Button */
+    .btn-success {
+        background: linear-gradient(135deg, #0A66C2 0%, #6D5BD0 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        text-transform: none;
+        width: max-content;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
+        color: white;
+        background: linear-gradient(135deg, #0A66C2 0%, #6D5BD0 100%);
+    }
+    
+    /* Section Title */
+    .section-title {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        color: #0B132B;
+        margin-top: 32px;
+        margin-bottom: 16px;
+    }
+    
+    /* Description */
+    .text-muted {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        color: #1C2541;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+    
+    /* Card Headers */
+    .card-header {
+        border-radius: 16px 16px 0 0 !important;
+        font-weight: 600;
+        border: none;
+        padding: 16px 20px;
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-size: 14px;
+    }
+    
+    .card-header h5,
+    .card-header h6 {
+        margin: 0;
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .card-header.bg-success {
+        background: linear-gradient(135deg, #0A66C2 0%, #5BC0BE 100%) !important;
+    }
+    
+    .card-header.bg-warning {
+        background: rgba(109, 91, 208, 0.15) !important;
+        color: #6D5BD0 !important;
+    }
+    
+    .card-header.bg-primary {
+        background: linear-gradient(135deg, #0A66C2 0%, #6D5BD0 100%) !important;
+    }
+    
+    /* Match Score */
+    .display-4 {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 800;
+        font-size: 48px;
+        color: #0A66C2;
+        margin: 16px 0;
+    }
+    
+    .stats-text {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-size: 14px;
+        color: #1C2541;
+        opacity: 0.8;
+    }
+    
+    /* Skill Badges */
+    .badge.bg-success {
+        background: rgba(10, 102, 194, 0.1) !important;
+        color: #0A66C2;
+        border: 1px solid rgba(10, 102, 194, 0.2);
+    }
+    
+    .badge.bg-warning {
+        background: rgba(109, 91, 208, 0.1) !important;
+        color: #6D5BD0 !important;
+        border: 1px solid rgba(109, 91, 208, 0.2);
+    }
+    
+    /* Skill Section Headers */
+    h6.text-success,
+    h6.text-warning,
+    h6.text-primary {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        margin-top: 8px;
+    }
+    
+    h6.text-success {
+        color: #0A66C2 !important;
+    }
+    
+    h6.text-warning {
+        color: #6D5BD0 !important;
+    }
+    
+    h6.text-primary {
+        color: #0A66C2 !important;
+    }
+    
+    /* Alert */
+    .alert-info {
+        background: rgba(91, 192, 190, 0.1);
+        border: 1px solid rgba(91, 192, 190, 0.2);
+        border-radius: 12px;
+        color: #1C2541;
+        font-family: 'Inter', Helvetica, sans-serif;
+    }
+    
+    .alert-heading {
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        color: #0B132B;
+    }
+    
+    /* Back Button */
+    .btn-secondary {
+        background: white;
+        border: 2px solid #EAEAEA;
+        color: #1C2541;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-family: 'Inter', Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        width: max-content;
+        margin-bottom: 40px;
+    }
+    
+    .btn-secondary:hover {
+        background: #f8f9fa;
+        border-color: #0A66C2;
+        color: #0A66C2;
+        transform: translateX(-4px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .job-details-page {
+            padding: 100px 16px 40px 16px;
+        }
+        
+        .job-title {
+            font-size: 24px;
+        }
+        
+        .job-card .card-body {
+            padding: 20px;
+        }
+    }
+</style>
 
-                    <div class="mb-3">
-                        {% if job.company %}
-                        <span class="badge bg-primary me-2">{{ job.company }}</span>
-                        {% endif %}
-                        {% if job.location %}
-                        <span class="badge bg-secondary me-2">{{ job.location }}</span>
-                        {% endif %}
-                
+<div class="job-details-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Job Information -->
+                <div class="card job-card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h2 class="job-title">{{ job.title }}</h2>
 
+                        <div class="mb-3">
+                            {% if job.company %}
+                            <span class="badge bg-primary me-2">🏢 {{ job.company }}</span>
+                            {% endif %}
+                            {% if job.location %}
+                            <span class="badge bg-secondary me-2">📍 {{ job.location }}</span>
+                            {% endif %}
+                            <span class="badge bg-info">💼 {{ job.domain }}</span>
 
-                        <span class="badge bg-info">{{ job.domain }}</span>
+                            {% if job.job_url %}
+                            <a href="{{ job.job_url }}"
+                            class="btn btn-success mt-3"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            Apply Now
+                            </a>
+                            {% endif %}
+                        </div>
 
-                        {% if job.job_url %}
-                        <a href="{{ job.job_url }}"
-                        class="btn btn-success mt-3"
-                        target="_blank"
-                        rel="noopener noreferrer">
-                        Apply Now
-                        </a>
-                        {% endif %}
-
-                     
-                 
+                        <h5 class="section-title">Job Description</h5>
+                        <p class="text-muted">{{ job.description }}</p>
                     </div>
-
-                    <h5 class="mt-4">Job Description</h5>
-                    <p class="text-muted">{{ job.description }}</p>
                 </div>
+            </div>
+
+            <div class="col-lg-4">
+                {% if recommendation %}
+                <!-- Match Score Card -->
+                <div class="card job-card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">🎯 Your Match Score</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h1 class="display-4 text-success">{{ "%.1f"|format(recommendation.score) }}%</h1>
+                        <p class="stats-text">
+                            {{ recommendation.matched_weight }} out of {{ recommendation.required_weight }} required skills
+                            matched
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Matched Skills -->
+                {% if recommendation.matched_hard_skills or recommendation.matched_soft_skills %}
+                <div class="card job-card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">✓ Skills You Have</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if recommendation.matched_hard_skills %}
+                        <h6 class="text-success">💻 Hard Skills</h6>
+                        <div class="mb-3">
+                            {% for skill in recommendation.matched_hard_skills %}
+                            <span class="badge bg-success me-1 mb-1">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if recommendation.matched_soft_skills %}
+                        <h6 class="text-success">🤝 Soft Skills</h6>
+                        <div>
+                            {% for skill in recommendation.matched_soft_skills %}
+                            <span class="badge bg-success me-1 mb-1">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Missing Skills -->
+                {% if recommendation.missing_hard_skills or recommendation.missing_soft_skills %}
+                <div class="card job-card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">📚 Skills to Develop</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if recommendation.missing_hard_skills %}
+                        <h6 class="text-warning">💻 Hard Skills</h6>
+                        <div class="mb-3">
+                            {% for skill in recommendation.missing_hard_skills %}
+                            <span class="badge bg-warning text-dark me-1 mb-1">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if recommendation.missing_soft_skills %}
+                        <h6 class="text-warning">🤝 Soft Skills</h6>
+                        <div>
+                            {% for skill in recommendation.missing_soft_skills %}
+                            <span class="badge bg-warning text-dark me-1 mb-1">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% else %}
+                <!-- No Match Data -->
+                <div class="alert alert-info">
+                    <h6 class="alert-heading">ℹ️ No Match Data</h6>
+                    <p class="mb-0">Upload your CV to see how well you match this job!</p>
+                </div>
+                {% endif %}
+
+                <!-- Required Skills -->
+                {% if job.required_hard_skills or job.required_soft_skills %}
+                <div class="card job-card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">📋 Required Skills</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if job.required_hard_skills %}
+                        <h6 class="text-primary">💻 Hard Skills</h6>
+                        <div class="mb-3">
+                            {% for skill in job.required_hard_skills %}
+                            <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if job.required_soft_skills %}
+                        <h6 class="text-primary">🤝 Soft Skills</h6>
+                        <div>
+                            {% for skill in job.required_soft_skills %}
+                            <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="col-lg-4">
-            {% if recommendation %}
-            <!-- Match Score Card -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Your Match Score</h5>
-                </div>
-                <div class="card-body text-center">
-                    <h1 class="display-4 text-success">{{ "%.1f"|format(recommendation.score) }}%</h1>
-                    <p class="text-muted">
-                        {{ recommendation.matched_weight }} out of {{ recommendation.required_weight }} required skills
-                        matched
-                    </p>
-                </div>
-            </div>
-
-            <!-- Matched Skills -->
-            {% if recommendation.matched_hard_skills or recommendation.matched_soft_skills %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0">✓ Skills You Have</h6>
-                </div>
-                <div class="card-body">
-                    {% if recommendation.matched_hard_skills %}
-                    <h6 class="text-success">Hard Skills</h6>
-                    <div class="mb-3">
-                        {% for skill in recommendation.matched_hard_skills %}
-                        <span class="badge bg-success me-1 mb-1">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    {% if recommendation.matched_soft_skills %}
-                    <h6 class="text-success">Soft Skills</h6>
-                    <div>
-                        {% for skill in recommendation.matched_soft_skills %}
-                        <span class="badge bg-success me-1 mb-1">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Missing Skills -->
-            {% if recommendation.missing_hard_skills or recommendation.missing_soft_skills %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h6 class="mb-0">✗ Skills to Develop</h6>
-                </div>
-                <div class="card-body">
-                    {% if recommendation.missing_hard_skills %}
-                    <h6 class="text-warning">Hard Skills</h6>
-                    <div class="mb-3">
-                        {% for skill in recommendation.missing_hard_skills %}
-                        <span class="badge bg-warning text-dark me-1 mb-1">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    {% if recommendation.missing_soft_skills %}
-                    <h6 class="text-warning">Soft Skills</h6>
-                    <div>
-                        {% for skill in recommendation.missing_soft_skills %}
-                        <span class="badge bg-warning text-dark me-1 mb-1">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% else %}
-            <!-- No Match Data -->
-            <div class="alert alert-info">
-                <h6 class="alert-heading">No Match Data</h6>
-                <p class="mb-0">Upload your CV to see how well you match this job!</p>
-            </div>
-            {% endif %}
-
-            <!-- Required Skills -->
-            {% if job.required_hard_skills or job.required_soft_skills %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">Required Skills</h6>
-                </div>
-                <div class="card-body">
-                    {% if job.required_hard_skills %}
-                    <h6 class="text-primary">Hard Skills</h6>
-                    <div class="mb-3">
-                        {% for skill in job.required_hard_skills %}
-                        <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    {% if job.required_soft_skills %}
-                    <h6 class="text-primary">Soft Skills</h6>
-                    <div>
-                        {% for skill in job.required_soft_skills %}
-                        <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
+        <div class="mt-4">
+            <a href="{{ url_for('recommendations') }}" class="btn btn-secondary">← Back to Recommendations</a>
         </div>
-    </div>
-
-    <div class="mt-4">
-        <a href="{{ url_for('recommendations') }}" class="btn btn-secondary">← Back to Recommendations</a>
     </div>
 </div>
 {% endblock %}

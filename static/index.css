@@ -1,0 +1,157 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#root {
+  width: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.navbar {
+  position: fixed;
+  top: 16px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 19px 0 19px;
+}
+
+.navbar-logo {
+  font-family: 'Pavelt', Helvetica, sans-serif;
+  font-weight: 800;
+  color: #0A66C2;
+  font-size: 32px;
+  text-decoration: none;
+  transform: translateY(-1rem);
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 52px;
+  transform: translateY(-1rem);
+}
+
+.navbar-nav.animate-delay {
+  --animation-delay: 200ms;
+}
+
+.navbar-link {
+  font-family: 'Aboreto', Helvetica;
+  font-weight: 400;
+  color: #0B132B;
+  font-size: 15px;
+  text-decoration: none;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.navbar-link:hover {
+  color: #5BC0BE;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 16px;
+  transform: translateY(-1rem);
+}
+
+.navbar-buttons.animate-delay {
+  --animation-delay: 400ms;
+}
+
+.btn {
+  width: 80px;
+  height: 30px;
+  border-radius: 20px;
+  font-family: 'Inter', Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #0A66C2;
+  color: #0A66C2;
+}
+
+.btn-outline:hover {
+  background: #0A66C2;
+  color: white;
+}
+
+.btn-primary {
+  background: #0A66C2;
+  color: #fcfcfc;
+}
+
+.btn-primary:hover {
+  background: #085699;
+}
+
+.hero {
+  position: relative;
+}
+
+.hero-badge-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  transform: translateY(-1rem);
+  padding-top: 100px;
+}
+
+.hero-badge-container.animate-delay {
+  --animation-delay: 600ms;
+}
+
+.hero-badge {
+  width: 350px;
+  height: 40px;
+  display: flex;
+  gap: 14px;
+  border-radius: 35px;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgba(91, 192, 190, 0.5) 0%,
+    rgba(10, 102, 194, 0.5) 100%
+  );
+  align-items: center;
+}
+
+.hero-badge-icon {
+  width: 70px;
+  height: 30px;
+  margin-left: 16px;
+}
+
+.hero-badge-text {
+  width: 341px;
+  align-self: center;
+  font-family: 'Inter', Helvetica, sans-serif;
+  font-weight: 600;
+  color: white;
+  font-size: 13px;
+}

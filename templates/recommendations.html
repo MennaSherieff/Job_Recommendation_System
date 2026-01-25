@@ -1,70 +1,112 @@
 {% extends "base.html" %}
 
+{% block head %}
+<!-- Add Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/dist/font/bootstrap-icons.min.css">
+<!-- Add Custom CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='recommendations.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Job Recommendations</h1>
+<div class="recommendations-container">
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="bi bi-stars"></i> Job Recommendations</h1>
+            {% if recommendations %}
+            <p class="lead">We found {{ recommendations|length }} perfect job matches for you!</p>
+            {% endif %}
+        </div>
 
-    {% if recommendations %}
-    <p class="lead">We found {{ recommendations|length }} job matches based on your CV!</p>
+        {% if recommendations %}
+        <div class="row">
+            {% for rec in recommendations %}
+            <div class="col-md-6 mb-4">
+                <div class="card job-card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="job-title">
+                            <i class="bi bi-briefcase-fill"></i>
+                            {{ rec.job_title }}
+                        </h5>
 
-    <div class="row">
-        {% for rec in recommendations %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ rec.job_title }}</h5>
-
-                    <div class="mb-2">
-                        {% if rec.company %}
-                        <span class="badge bg-primary">{{ rec.company }}</span>
-                        {% endif %}
-                        {% if rec.location %}
-                        <span class="badge bg-secondary">{{ rec.location }}</span>
-                        {% endif %}
-                        <span class="badge bg-info">{{ rec.domain }}</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">Match Score:</span>
-                            <span class="badge bg-success fs-6">{{ "%.1f"|format(rec.score) }}%</span>
+                        <div class="badge-group">
+                            {% if rec.company %}
+                            <span class="custom-badge badge-company">
+                                <i class="bi bi-building"></i> {{ rec.company }}
+                            </span>
+                            {% endif %}
+                            {% if rec.location %}
+                            <span class="custom-badge badge-location">
+                                <i class="bi bi-geo-alt-fill"></i> {{ rec.location }}
+                            </span>
+                            {% endif %}
+                            <span class="custom-badge badge-domain">
+                                <i class="bi bi-diagram-3-fill"></i> {{ rec.domain }}
+                            </span>
                         </div>
-                        <div class="progress mt-2" style="height: 20px;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ rec.score }}%;"
-                                aria-valuenow="{{ rec.score }}" aria-valuemin="0" aria-valuemax="100">
+
+                        <div class="match-score-section">
+                            <div class="match-score-header">
+                                <span class="match-score-label">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                    Match Score
+                                </span>
+                                <span class="match-score-value">{{ "%.1f"|format(rec.score) }}%</span>
+                            </div>
+                            <div class="progress" style="height: 12px; border-radius: 10px; background-color: #e9ecef; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: {{ rec.score }}%; background: linear-gradient(90deg, #0A66C2 0%, #5BC0BE 100%);" 
+                                    aria-valuenow="{{ rec.score }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="d-flex justify-content-between text-muted small mb-3">
-                        <span>✓ {{ rec.matched_skills_count }} skills matched</span>
-                        <span>✗ {{ rec.missing_skills_count }} skills missing</span>
-                    </div>
+                        <div class="skills-stats">
+                            <div class="skill-stat">
+                                <div class="skill-stat-icon matched">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <span class="skill-stat-number">{{ rec.matched_skills_count }}</span>
+                                <span class="skill-stat-label">Skills Matched</span>
+                            </div>
+                            <div class="skill-stat">
+                                <div class="skill-stat-icon missing">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </div>
+                                <span class="skill-stat-number">{{ rec.missing_skills_count }}</span>
+                                <span class="skill-stat-label">Skills Missing</span>
+                            </div>
+                        </div>
 
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('job_details', job_id=rec.job_id) }}" class="btn btn-primary">
-                            View Details
-                        </a>
-                        <!-- {% if rec.job_url %}
-                            <a href="{{ rec.job_url }}" class="btn btn-outline-success" target="_blank"
-                            rel="noopener noreferrer">
-                                Apply Now
+                        <div class="action-buttons">
+                            <a href="{{ url_for('job_details', job_id=rec.job_id) }}" class="btn btn-view-details">
+                                <i class="bi bi-eye-fill"></i> View Details
                             </a>
-                        {% endif %} -->
+                            <!-- {% if rec.job_url %}
+                            <a href="{{ rec.job_url }}" class="btn btn-apply" target="_blank"
+                               rel="noopener noreferrer">
+                                <i class="bi bi-send-fill"></i> Apply Now
+                            </a>
+                            {% endif %} -->
+                        </div>
                     </div>
-
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-folder2-open"></i>
+            </div>
+            <h4>No Recommendations Yet</h4>
+            <p>Upload your CV to get personalized job recommendations tailored just for you!</p>
+            <a href="{{ url_for('upload') }}" class="btn btn-upload">
+                <i class="bi bi-upload"></i> Upload CV
+            </a>
+        </div>
+        {% endif %}
     </div>
-    {% else %}
-    <div class="alert alert-info">
-        <h4 class="alert-heading">No recommendations yet</h4>
-        <p>Upload your CV to get personalized job recommendations!</p>
-        <hr>
-        <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload CV</a>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

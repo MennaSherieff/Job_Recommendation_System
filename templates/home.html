@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h1>Job Recommendation System</h1>
+<div id="root"></div>
+
+<script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock %}

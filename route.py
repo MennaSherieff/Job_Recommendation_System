@@ -273,3 +273,4 @@ def register_routes(app,db,bcrypt):
         logout_user()
         flash("You have been logged out.", "success")
         return redirect(url_for('home'))
+        
