@@ -1,0 +1,297 @@
+/* Job Recommendations Page Styles - Clean & Relaxed */
+
+.recommendations-container {
+    min-height: 100vh;
+    padding: 120px 20px 60px 20px;
+    background: white;
+}
+
+.page-header {
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+    padding: 0;
+}
+
+.page-header h1 {
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: #0B132B;
+    margin: 0 0 12px 0;
+}
+
+.page-header .lead {
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    color: #1C2541;
+    margin: 0;
+    opacity: 0.8;
+}
+
+/* Job Cards Grid */
+.row {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Job Card Styles */
+.job-card {
+    background: white;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 2px 12px rgba(11, 19, 43, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.job-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0A66C2 0%, #6D5BD0 50%, #5BC0BE 100%);
+}
+
+.job-card:hover {
+    box-shadow: 0 8px 24px rgba(11, 19, 43, 0.12);
+    transform: translateY(-2px);
+}
+
+.job-card .card-body {
+    padding: 28px;
+}
+
+/* Job Title */
+.job-title {
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #0B132B;
+    margin: 0 0 16px 0;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.job-title i {
+    color: #0A66C2;
+    font-size: 20px;
+}
+
+/* Badge Styles */
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.custom-badge {
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge-company {
+    background: rgba(10, 102, 194, 0.1);
+    color: #0A66C2;
+    border: 1px solid rgba(10, 102, 194, 0.2);
+}
+
+.badge-location {
+    background: rgba(91, 192, 190, 0.1);
+    color: #5BC0BE;
+    border: 1px solid rgba(91, 192, 190, 0.2);
+}
+
+.badge-domain {
+    background: rgba(109, 91, 208, 0.1);
+    color: #6D5BD0;
+    border: 1px solid rgba(109, 91, 208, 0.2);
+}
+
+/* Match Score Section */
+.match-score-section {
+    background: white;
+    border-radius: 8px;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.match-score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.match-score-label {
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #1C2541;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.match-score-label i {
+    color: #0A66C2;
+    font-size: 14px;
+}
+
+.match-score-value {
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #0A66C2;
+}
+
+/* Progress Bar */
+.custom-progress {
+    width: 100%;
+    height: 8px;
+    background: #EAEAEA;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.custom-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #0A66C2 0%, #5BC0BE 100%);
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+/* Skills Stats */
+.skills-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.skill-stat {
+    text-align: center;
+    flex: 1;
+}
+
+.skill-stat-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.skill-stat-icon.matched {
+    color: #0A66C2;
+}
+
+.skill-stat-icon.missing {
+    color: #6D5BD0;
+}
+
+.skill-stat-number {
+    display: block;
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1C2541;
+    line-height: 1;
+}
+
+.skill-stat-label {
+    display: block;
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-size: 11px;
+    color: #1C2541;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: grid;
+    gap: 12px;
+}
+
+.btn-view-details {
+    background: linear-gradient(135deg, #0A66C2 0%, #6D5BD0 100%);
+    border: none;
+    color: white;
+    padding: 17px 20px;
+    border-radius: 10px;
+    font-family: 'Inter', Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    width: auto;
+    min-width: 120px;
+}
+
+.btn-view-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
+    color: white;
+}
+
+.btn-view-details i {
+    font-size: 14px;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .recommendations-container {
+        padding: 100px 16px 40px 16px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+    }
+
+    .page-header .lead {
+        font-size: 16px;
+    }
+
+    .job-card .card-body {
+        padding: 20px;
+    }
+
+    .job-title {
+        font-size: 20px;
+    }
+
+    .skills-stats {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .empty-state {
+        padding: 60px 24px;
+    }
+}
