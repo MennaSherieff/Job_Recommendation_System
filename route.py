@@ -3,11 +3,21 @@ from docx import Document
 import uuid
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_user, logout_user, login_required, current_user
-from pipeline.feature_extraction import clean_text
+from src.pipeline.feature_extraction import clean_text
 import os
 from models import CV, User, Recommendation
 from dotenv import load_dotenv
 
+from src.services.cv_service import CVService
+
+from src.services.job_service import JobService
+from src.services.recommendation_service import RecommendationService
+        
+from src.services.video_service import VideoService
+from src.services.recommendation_service import RecommendationService
+
+from src.services.recommendation_service import RecommendationService
+from src.services.recommendation_service import RecommendationService
 load_dotenv()
 
 def register_routes(app,db,bcrypt):
@@ -55,7 +65,7 @@ def register_routes(app,db,bcrypt):
             db.session.commit()
 
             # Process CV and extract features using service
-            from services.cv_service import CVService
+           
             
             try:
                 # Extract features from CV
@@ -78,9 +88,7 @@ def register_routes(app,db,bcrypt):
         if not video_file:
             flash("No video file selected.", "error")
             return redirect(url_for('upload'))
-            
-        from services.video_service import VideoService
-        from services.recommendation_service import RecommendationService
+    
         
         try:
             # Save video
@@ -113,7 +121,7 @@ def register_routes(app,db,bcrypt):
     @app.route('/delete_cv/<int:cv_id>', methods=['POST'])
     @login_required
     def delete_cv(cv_id):
-        from services.cv_service import CVService
+        
         
         if CVService.delete_cv(cv_id, current_user.id):
             flash("CV and associated data deleted successfully.", "success")
@@ -130,7 +138,7 @@ def register_routes(app,db,bcrypt):
             job_skills = request.form.get('job_skills', '').split(',')
             domain = request.form.get('domain', 'IT')
             
-            from services.recommendation_service import RecommendationService
+
             
             try:
                 # Generate a manual match for POC
@@ -232,7 +240,7 @@ def register_routes(app,db,bcrypt):
     @login_required
     def recommendations():
         """Display job recommendations for the current user."""
-        from services.recommendation_service import RecommendationService
+        
         
         # Get user's recommendations
         recommendations = RecommendationService.get_user_recommendations(
@@ -246,8 +254,7 @@ def register_routes(app,db,bcrypt):
     @login_required
     def job_details(job_id):
         """Display detailed job information with skill matching."""
-        from services.job_service import JobService
-        from services.recommendation_service import RecommendationService
+    
         
         # Get job details
         job = JobService.get_job(job_id)
